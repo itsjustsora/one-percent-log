@@ -1,9 +1,5 @@
 ## 01. 신뢰할 수 있고 확장 가능하며 유지보수하기 쉬운 애플리케이션
 
-> 추후 수정본 업로드 예정
-
-<br>
-
 ### 새롭게 알게된 점(New)
 
 `성능 기술하기(13p)` 문단에서 응답 시간의 평균과 백분위를 다루는 부분입니다.
@@ -68,7 +64,30 @@
 
 ### 추가 내용(Amendment): 학습이 도움이 되었던 블로그, 유튭, 사례 등
 
-- [카카오 장애가 우리에게 던진 세가지 질문](https://brunch.co.kr/@brunchgpjz/43)
-    - 카오스 몽키가 필요한 이유를 더 잘 이해할 수 있었던 브런치 글입니다.
-- [[Chapter 05 | Observability] Prometheus 이해하기](https://jominseoo.tistory.com/77)
-    - 메트릭 타입 4가지(히스토그램 포함)에 대한 간단한 설명입니다. [프로메테우스 공식 레퍼런스 번역글](https://godekdls.github.io/Prometheus/practices.histograms/)에 나온 개념이 너무 어려워 간단히 블로그 글을 참고했습니다.
+**[1] 카오스 몽키**
+참고:  [카카오 장애가 우리에게 던진 세가지 질문](https://brunch.co.kr/@brunchgpjz/43)
+- '야생의 원숭이가 무장을 한채 우리 데이터센터에 난동을 부려도 우리 서비스는 살아남을 수 있을까?' 
+- 서비스에 장애를 주입해 서비스가 견디는지를 보는 것을 의미한다.
+
+<br>
+
+**[2] Prometheus 메트릭 타입**  
+참고: [[Chapter 05 | Observability] Prometheus 이해하기](https://jominseoo.tistory.com/77)
+- `Counter` : 축적되는 단방향으로 증가하는 숫자 메트릭 
+  - 앱이 재기동되면 다시 0부터 시작한다.
+  - e.g. number of requests, number of tasks completed etc
+- `Gauge` : 증가하거나 감소할 수 있는 숫자 값을 나타낼 때 쓰는 메트릭
+  - e.g. current temperatures, active thread count etc
+- `Histogram` : 관찰 대상에 대해서 샘플링해서 버킷 별로 구분 및 저장하고 조회할 수 있는 메트릭
+  - e.g. database I/O latency = 0.99, 0.95, 0.50 percentile etc
+- `Summary` : 히스토그램과 비슷하게 관찰 대상에 대해서 샘플링을 하며, 관찰 대상에 대한 Total count 혹은 관찰 값에 대한 sum도 제공한다.
+- Histogram vs Summary
+  - aggregate가 필요할 때 -> Histogram
+  - aggregate 필요 X & value의 범위, 분포가 필요할 때 -> Histogram
+  - aggregate 필요 X & value의 범위, 분포 X & 정확한 quantile 필요 -> Summary
+
+<br>
+
+**[3] fan-out**
+> 한 개의 요청이 여러 개의 작업을 유발하는 정도
+- 트위터에서 팬 아웃 부하를 이야기 하는 것은, 팔로우 기반의 SNS이기 때문이다. 한 사용자의 트윗이 N명의 팔로워들에게 전달하는 과정에서 부하가 생길 수 있다.
